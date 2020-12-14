@@ -39,6 +39,16 @@ void dfs(unsigned int n, unsigned int *mark,
          node *nodes, unsigned int nodes_len,
          int component);
 
+/**
+ * Nalezne všem vrcholům a hranám jejich komponentu ve které se nacházejí
+ *
+ * @param nodes pole vrcholů
+ * @param nodes_len délka pole vrcholů
+ * @param edges pole hran
+ * @param edges_len délka pole hran
+ *
+ * @return
+ */
 int find_components(node *nodes, unsigned int nodes_len, edge *edges, unsigned int edges_len);
 
 #endif

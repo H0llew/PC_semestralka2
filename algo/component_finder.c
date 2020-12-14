@@ -107,5 +107,7 @@ int find_components(node *nodes, unsigned int nodes_len, edge *edges, unsigned i
         }
     }
 
+    free(marks);
+
     return (int) comps;
 }

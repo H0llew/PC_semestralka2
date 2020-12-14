@@ -5,8 +5,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
-#include "../reader_utils.h"
-#include "../graph.h"
+#include "reader_utils.h"
+#include "../algo/graph.h"
 
 /** hlavička souboru */
 #define FILE_NODES_HEADER "WKT,id,sname\n"

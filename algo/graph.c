@@ -1,27 +1,5 @@
 #include "graph.h"
 
-edge create_edge(unsigned int id, unsigned int source, unsigned int target, double weight) {
-    edge *e = malloc(sizeof(edge));
-
-    e->id = id;
-    e->source = source;
-    e->target = target;
-    e->weight = weight;
-    e->component = -1;
-
-    return *e;
-}
-
-node create_node(unsigned int id, double latitude, double longitude) {
-    node *n = malloc(sizeof(node));
-
-    n->id = id;
-    n->latitude = latitude;
-    n->longitude = longitude;
-
-    return *n;
-}
-
 int get_node_pos(unsigned int n, node *nodes, unsigned int nodes_len) {
     unsigned int assumed_pos;
     int i = 0;
@@ -82,7 +60,6 @@ graph *create_graphs(node *nodes, unsigned int nodes_len,
     for (i = 0; i < nodes_len; ++i) {
         comp = nodes[i].component;
         if (comp > (int) components) {
-            /* IDK bolí mě hlava :D */
             continue;
         }
         nodes_in_component_count[comp]++;
@@ -91,7 +68,6 @@ graph *create_graphs(node *nodes, unsigned int nodes_len,
     for (i = 0; i < edges_len; ++i) {
         comp = edges[i].component;
         if (comp > (int) components) {
-            /* IDK bolí mě hlava :D */
             continue;
         }
         vertex_in_component_count[comp]++;

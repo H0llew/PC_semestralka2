@@ -5,7 +5,7 @@ unsigned int read_nodes(char *file_name, node **nodes, unsigned int *nodes_len) 
     FILE *file;
     unsigned int file_length;
     char row[MAX_SZ_NODES_LENGTH];
-    unsigned int count,
+    unsigned int count;
     int actNode = 0, i;
     int err = 0;
     /* vrcholy */

@@ -50,14 +50,28 @@ typedef struct graph_t {
     edge *mst;
 } graph;
 
-/* testovací fce */
-
+/**
+ * Vrátí pozici vrcholu v poli vrcholů
+ *
+ * @param n vrchol
+ * @param nodes pole vrchoů
+ * @param nodes_len délka pole vrcholů
+ *
+ * @return pozice vrcholu
+ */
 int get_node_pos(unsigned int n, node *nodes, unsigned int nodes_len);
 
-node create_node(unsigned int id, double latitude, double longitude);
-
-edge create_edge(unsigned int id, unsigned int source, unsigned int target, double weight);
-
+/**
+ * Vytvoří grafy z pole hran a vrcholů, podle komponent prvků
+ *
+ * @param nodes pole vrcholů
+ * @param nodes_len délka pole vrcholů
+ * @param edges hrany
+ * @param edges_len délka pole hran
+ * @param components počet komponent
+ *
+ * @return pole grafů
+ */
 graph *create_graphs(node *nodes, unsigned int nodes_len,
                      edge *edges, unsigned int edges_len,
                      unsigned int components);

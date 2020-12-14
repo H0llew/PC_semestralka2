@@ -1,11 +1,11 @@
 #include <stdio.h>
 
-#include "graph.h"
+#include "algo/graph.h"
 #include "io/edges_io.h"
-#include "nodes_reader.h"
-#include "component_finder.h"
-#include "kruskal_mst.h"
-#include "mst.h"
+#include "io/nodes_io.h"
+#include "algo/component_finder.h"
+#include "algo/kruskal_mst.h"
+#include "algo/mst.h"
 
 int mainXXXXXX(int argc, char *argv[]) {
     unsigned int i, j;
@@ -104,7 +104,11 @@ int main(int argc, char *argv[]) {
     edge *edges = NULL;
     unsigned int edges_len = 0, i;
 
+    node *nodes = NULL;
+    unsigned int nodes_len = 0;
+
     read_edges(argv[1], &edges, &edges_len);
+    read_nodes(argv[2], &nodes, &nodes_len);
 
     return 0;
 }

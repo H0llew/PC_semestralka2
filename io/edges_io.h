@@ -8,8 +8,8 @@
 
 #include <string.h>
 
-#include "../graph.h"
-#include "../reader_utils.h"
+#include "../algo/graph.h"
+#include "reader_utils.h"
 
 /** hlavička souboru 1 */
 #define FILE_HEADER_EDGES_1 "WKT,id,nation,cntryname,source,target,clength,,,,,,,,,,,,,,,,,,\n"

@@ -1,5 +1,5 @@
 #include "mst.h"
-#include "io/edges_io.h"
+#include "../io/edges_io.h"
 
 int mst(node *nodes, unsigned int nodes_len, edge *edges, unsigned int edges_len, char *output_file) {
     int components = 0, res;
@@ -48,7 +48,7 @@ int join_edges(graph *graphs, unsigned int components, edge **edges, unsigned in
     unsigned int count, i, j, k;
 
     /* kontrola vstupu */
-    if (!graphs || components == 0 || !edges || !edges_len)
+    if (!graphs || !graphs->mst || graphs->v == 0 || graphs->e == 0 || components == 0 || !edges || !edges_len)
         return -1;
 
     /* zjisti kolik hran je celkem ze všech mst */

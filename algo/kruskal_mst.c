@@ -66,7 +66,7 @@ int create_mst(graph *g, node *nodes, unsigned int nodes_len, subset subsets[]) 
 
     /* nemá cenu řešit mst */
     if (g->e == 0 || g->v == 1)
-        return 2;
+        return 1;
 
     /* 1. krok algoritmu -> seřaď prvky podle váhy(délky tratě) vzestupně */
     qsort(g->edges, g->e, sizeof(edge), compare_edges_weight);
@@ -87,7 +87,7 @@ int create_mst(graph *g, node *nodes, unsigned int nodes_len, subset subsets[]) 
 
     mst = malloc(sizeof(edge) * (g->v - 1));
     if (!mst)
-        return 3;
+        return 1;
 
     /* opakuj 2. a 3. krok algoritmu*/
     e = 0;
@@ -97,7 +97,6 @@ int create_mst(graph *g, node *nodes, unsigned int nodes_len, subset subsets[]) 
         edge curr = g->edges[i];
 
         /* zkontroluj cyklus a popřípadě přiřad hranu do mst */
-        /* TODO potenciální problémek :D co když hrana neexistuje? */
         /* a = union_find(subsets, (int) (curr.source - 1)); */
         /* b = union_find(subsets, (int) (curr.target - 1)); */
         a = union_find(subsets, get_node_pos(curr.source, nodes, nodes_len));
@@ -119,9 +118,12 @@ int create_mst(graph *g, node *nodes, unsigned int nodes_len, subset subsets[]) 
 
 int do_msts(graph *graphs, unsigned int components, node *nodes, unsigned int nodes_len) {
     unsigned int i;
+    int res;
     subset *subsets = NULL;
 
-    /* unpolished */
+    /* kontrola parametrů */
+    if (!graphs || components == 0 || !nodes || nodes_len)
+        return 1;
 
     /* vytvoř subset */
     subsets = malloc(sizeof(subset) * nodes_len);
@@ -132,8 +134,12 @@ int do_msts(graph *graphs, unsigned int components, node *nodes, unsigned int no
 
     for (i = 0; i < components; ++i) {
         /* projdi všechny komponenty grafu */
-        create_mst(&graphs[i], nodes, nodes_len, subsets);
+        res = create_mst(&graphs[i], nodes, nodes_len, subsets);
+        if (res == 1)
+            return 1;
     }
+
+    free(subsets);
 
     return 0;
 }

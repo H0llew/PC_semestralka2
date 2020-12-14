@@ -54,6 +54,16 @@ int compare_edges_weight(const void *e1, const void *e2);
  */
 int create_mst(graph *g, node *nodes, unsigned int nodes_len, subset subsets[]);
 
+/**
+ * Provede Kruskalův algoritmus nad všemi zadanými grafy. Výsledek je zapsán do struktry grafu.
+ *
+ * @param graphs pole grafů
+ * @param components počet grafů
+ * @param nodes pole vrcholů
+ * @param nodes_len délka pole vrcholů
+ *
+ * @return 0 pokud vše proběhlo v pořádku, jinak 1
+ */
 int do_msts(graph *graphs, unsigned int components, node *nodes, unsigned int nodes_len);
 
 #endif
