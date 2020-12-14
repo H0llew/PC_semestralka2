@@ -1,12 +1,12 @@
-#ifndef NODES_READER_H
-#define NODES_READER_H
+#ifndef NODES_IO_H
+#define NODES_IO_H
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
-#include "reader_utils.h"
-#include "graph.h"
+#include "../reader_utils.h"
+#include "../graph.h"
 
 /** hlavička souboru */
 #define FILE_NODES_HEADER "WKT,id,sname\n"
@@ -34,9 +34,8 @@ unsigned int read_nodes(char *file_name, node **nodes, unsigned int *nodes_len);
 /**
  * Zpracuje načtenou řádku na strukturu "nodeOLD".
  * @param line řádka pro zpracování
- * @param přiřadí do paměti 1, pokud nešla přiřadit paměť
  * @return vrchol reprezentující stanici, jinak NULL
  */
-node *process_node_row(char *line, int *flag);
+node *process_node_row(char *line);
 
 #endif

@@ -1,12 +1,11 @@
-#include "edges_reader.h"
+#include "edges_io.h"
 
 int read_edges(char *file_name, edge **edges, unsigned int *edges_len) {
     FILE *file;
     unsigned int file_length;
     edge *rows = NULL, *curr = NULL;
-    int actEdge, i, err = 0;
-    char row[MAX_SZ_EDGE_LENGTH];
-    unsigned int *matrix = NULL;
+    int actEdge, i;
+    char row[MAX_EDGES_ROW_LENGTH];
 
     /* kontrola parametrů */
     if (!file_name || !edges || !edges_len)
@@ -33,7 +32,7 @@ int read_edges(char *file_name, edge **edges, unsigned int *edges_len) {
     }
 
     /* zkontroluj hlavičku souboru */
-    fgets(row, MAX_SZ_EDGE_LENGTH, file); /* nebude NULL */
+    fgets(row, MAX_EDGES_ROW_LENGTH, file); /* nebude NULL */
     if ((strcmp(row, FILE_HEADER_EDGES_1) != 0) && (strcmp(row, FILE_HEADER_EDGES_2) != 0)) {
         free(rows);
         fclose(file);
@@ -42,8 +41,8 @@ int read_edges(char *file_name, edge **edges, unsigned int *edges_len) {
 
     /* projdi a zpracuj data souboru */
     actEdge = 0;
-    while (fgets(row, MAX_SZ_EDGE_LENGTH, file) != NULL) {
-        curr = process_edge_row(row, &err);
+    while (fgets(row, MAX_EDGES_ROW_LENGTH, file) != NULL) {
+        curr = process_edge_row(row);
         if (!curr) {
             /* free */
             /*
@@ -96,9 +95,13 @@ int read_edges(char *file_name, edge **edges, unsigned int *edges_len) {
     /* zkopíruj pole do outputu */
     *edges = malloc(sizeof(edge) * actEdge);
     if (!(*edges)) {
+        for (i = 0; i < actEdge; ++i) {
+            free(rows[i].wkt);
+            free(rows[i].nation_name);
+        }
         free(rows);
         fclose(file);
-        return 3;
+        return 4;
     }
 
     memcpy(*edges, rows, sizeof(edge) * actEdge);
@@ -112,7 +115,7 @@ int read_edges(char *file_name, edge **edges, unsigned int *edges_len) {
     return 0;
 }
 
-edge *process_edge_row(char *line, int *flag) {
+edge *process_edge_row(char *line) {
     int col, i;
     char wkt[MAX_WKT_LENGTH] = {0}, cols_value[EDGE_COLUMNS - 1][MAX_REST_LENGTH];
     edge *res;
@@ -125,7 +128,7 @@ edge *process_edge_row(char *line, int *flag) {
     char *token = NULL;
 
     /* ověření parametrů */
-    if (!line || !flag)
+    if (!line)
         return NULL;
 
     /* dostaň WKT */
@@ -187,20 +190,17 @@ edge *process_edge_row(char *line, int *flag) {
     /* vytvoř hranu a vlož do ní data */
     res = malloc(sizeof(edge));
     if (!res) {
-        *flag = 1;
         return NULL;
     }
 
     res->wkt = malloc(sizeof(char) * (strlen(wkt) + 1));
     if (!res->wkt) {
-        *flag = 1;
         free(res);
         return NULL;
     }
 
     res->nation_name = malloc(sizeof(char) * (strlen(cols_value[2]) + 1));
     if (!res->nation_name) {
-        *flag = 1;
         free(res->wkt);
         free(res);
         return NULL;
@@ -235,13 +235,47 @@ int checkIfExist(edge *rows, unsigned int rows_len, unsigned int source, unsigne
 
     /* kontrola parametrů */
     if (!rows || rows_len == 0 || source == 0 || target == 0)
-        return 1;
+        return -1;
 
     for (i = 0; i < rows_len; ++i) {
         if (((source == rows[i].source) && (target == rows[i].target)) ||
             ((source == rows[i].target) && (target == rows[i].source)))
-            return 1;
+            return -1;
     }
+
+    return 0;
+}
+
+int create_edges_file(char *file_name, edge *edges, unsigned int edges_len) {
+    FILE *file = NULL;
+    unsigned int i;
+    char *buffer = NULL;
+
+    /* kontrola parametrů */
+    if (!file_name || !edges || edges_len == 0)
+        return -1;
+
+    file = fopen(file_name, "w");
+    if (!file)
+        return -1;
+
+    /* zapisování do souboru */
+    fputs(FILE_HEADER_EDGES_1, file);
+    for (i = 0; i < edges_len; ++i) {
+        buffer = malloc(sizeof(char) * MAX_EDGES_ROW_LENGTH);
+        if (!buffer)
+            return -1;
+
+        sprintf(buffer, "%s,%d,%u,%s,%d,%d,%f,,,,,,,,,,,,,,,,,,\n",
+                edges[i].wkt, edges[i].id, edges[i].nation_id,
+                edges[i].nation_name, edges[i].source, edges[i].target, edges[i].weight);
+
+        fputs(buffer, file);
+
+        free(buffer);
+    }
+
+    fclose(file);
 
     return 0;
 }

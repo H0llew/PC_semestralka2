@@ -1,12 +1,12 @@
-#include "nodes_reader.h"
+#include "nodes_io.h"
 
 unsigned int read_nodes(char *file_name, node **nodes, unsigned int *nodes_len) {
     /* čtení */
     FILE *file;
     unsigned int file_length;
     char row[MAX_SZ_NODES_LENGTH];
-    unsigned int count;
-    int actNode = 0;
+    unsigned int count,
+    int actNode = 0, i;
     int err = 0;
     /* vrcholy */
     node *rows = NULL;
@@ -47,7 +47,7 @@ unsigned int read_nodes(char *file_name, node **nodes, unsigned int *nodes_len) 
     /* projdi a zpracuj data souboru */
     actNode = 0;
     while (fgets(row, MAX_SZ_NODES_LENGTH, file) != NULL) {
-        curr = process_node_row(row, &err);
+        curr = process_node_row(row);
         if (!curr) {
 
             /* IDK it depends.. */
@@ -80,6 +80,9 @@ unsigned int read_nodes(char *file_name, node **nodes, unsigned int *nodes_len) 
     *nodes = malloc(sizeof(node) * actNode);
     if (!(*nodes)) {
         fclose(file);
+        for (i = 0; i < actNode; ++i) {
+            free(rows[i].name);
+        }
         free(rows);
         return 3;
     }
@@ -101,7 +104,7 @@ unsigned int read_nodes(char *file_name, node **nodes, unsigned int *nodes_len) 
     return 0;
 }
 
-node *process_node_row(char *line, int *flag) {
+node *process_node_row(char *line) {
     unsigned int step = 0;
     char *wkt_token, *p_end, *p_end2;
     char cols[COLUMNS][MAX_SZ_NODES_LENGTH];
@@ -115,7 +118,7 @@ node *process_node_row(char *line, int *flag) {
     char *token = NULL;
 
     /* ověření parametrů */
-    if (!line || !flag)
+    if (!line)
         return NULL;
 
     /* zpracování řádky -> prvně rozdělíme */
@@ -163,7 +166,6 @@ node *process_node_row(char *line, int *flag) {
     /* vytvoř vrchol a vlož do něj prvky řádku */
     n = malloc(sizeof(node));
     if (!n) {
-        *flag = 1;
         return NULL;
     }
 
@@ -174,7 +176,6 @@ node *process_node_row(char *line, int *flag) {
     /* strcpy(n->name, cols[2]); */
     n->name = malloc(sizeof(char) * (strlen(cols[2]) + 1));
     if (!n->name) {
-        *flag = 1;
         free(n);
         return NULL;
     }
