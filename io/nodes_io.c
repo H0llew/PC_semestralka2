@@ -169,8 +169,8 @@ node *process_node_row(char *line) {
         return NULL;
     }
 
-    n->latitude = x;
-    n->longitude = y;
+    n->latitude = y;
+    n->longitude = x;
     n->id = id;
     n->component = -1;
     /* strcpy(n->name, cols[2]); */

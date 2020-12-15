@@ -6,6 +6,7 @@
 #include "algo/component_finder.h"
 #include "algo/kruskal_mst.h"
 #include "algo/mst.h"
+#include "algo/mrn.h"
 
 int mainXXXXXX(int argc, char *argv[]) {
     unsigned int i, j;
@@ -107,8 +108,12 @@ int main(int argc, char *argv[]) {
     node *nodes = NULL;
     unsigned int nodes_len = 0;
 
+    graph *res = NULL;
+
     read_edges(argv[1], &edges, &edges_len);
     read_nodes(argv[2], &nodes, &nodes_len);
+
+    mrn(argv[4], nodes, nodes_len);
 
     return 0;
 }

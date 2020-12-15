@@ -122,7 +122,7 @@ int do_msts(graph *graphs, unsigned int components, node *nodes, unsigned int no
     subset *subsets = NULL;
 
     /* kontrola parametrů */
-    if (!graphs || components == 0 || !nodes || nodes_len)
+    if (!graphs || components == 0 || !nodes || nodes_len == 0)
         return 1;
 
     /* vytvoř subset */
