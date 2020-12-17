@@ -21,14 +21,14 @@ int read_edges(char *file_name, edge **edges, unsigned int *edges_len) {
     if (file_length < 2) {
         /* soubor jen s hlavičkou asi smysl nedává */
         fclose(file);
-        return 3;
+        return 1;
     }
 
     /* přiřaď pamět potřebnou pro zpracování a načtení všech řádků */
-    rows = malloc(sizeof(edge) * file_length);
+    rows = malloc(sizeof(edge) * (file_length - 1));
     if (!rows) {
         fclose(file);
-        return 4;
+        return 2;
     }
 
     /* zkontroluj hlavičku souboru */
@@ -36,7 +36,7 @@ int read_edges(char *file_name, edge **edges, unsigned int *edges_len) {
     if ((strcmp(row, FILE_HEADER_EDGES_1) != 0) && (strcmp(row, FILE_HEADER_EDGES_2) != 0)) {
         free(rows);
         fclose(file);
-        return 3;
+        return 1;
     }
 
     /* projdi a zpracuj data souboru */
@@ -50,22 +50,21 @@ int read_edges(char *file_name, edge **edges, unsigned int *edges_len) {
             return (err == 1) ? 4 : 3;
              */
             /* IDK it depends... 0*/
-            continue;
+            free_edges(&rows, actEdge);
+            return 1;
         }
 
         /* vyfiltruj špatná data */
 
         /* 0 délka */
         if (curr->weight == 0) {
-            free(curr->wkt);
-            free(curr->nation_name);
+            free_edge(curr);
             free(curr);
             continue;
         }
         /* hrana {u,u} */
         if (curr->target == curr->source) {
-            free(curr->wkt);
-            free(curr->nation_name);
+            free_edge(curr);
             free(curr);
             continue;
         }
@@ -73,21 +72,20 @@ int read_edges(char *file_name, edge **edges, unsigned int *edges_len) {
         if (actEdge > 0) {
             /* id duplicita */
             if (rows[actEdge - 1].id == curr->id) {
-                free(curr->wkt);
-                free(curr->nation_name);
+                free_edge(curr);
                 free(curr);
                 continue;
             }
             /* hrana již existuje */
-            if (checkIfExist(rows, actEdge, curr->source, curr->target) == 1) {
-                free(curr->wkt);
-                free(curr->nation_name);
+            if (check_if_exist(rows, actEdge, curr->source, curr->target) == 1) {
+                free_edge(curr);
                 free(curr);
                 continue;
             }
         }
 
         rows[actEdge] = *curr;
+        /* free_edge(curr); */
         free(curr);
         actEdge++;
     }
@@ -95,13 +93,10 @@ int read_edges(char *file_name, edge **edges, unsigned int *edges_len) {
     /* zkopíruj pole do outputu */
     *edges = malloc(sizeof(edge) * actEdge);
     if (!(*edges)) {
-        for (i = 0; i < actEdge; ++i) {
-            free(rows[i].wkt);
-            free(rows[i].nation_name);
-        }
-        free(rows);
+        free_edges(&rows, actEdge);
+        /* free(rows); */
         fclose(file);
-        return 4;
+        return 2;
     }
 
     memcpy(*edges, rows, sizeof(edge) * actEdge);
@@ -230,7 +225,7 @@ edge *process_edge_row(char *line) {
     return res;
 }
 
-int checkIfExist(edge *rows, unsigned int rows_len, unsigned int source, unsigned int target) {
+int check_if_exist(edge *rows, unsigned int rows_len, unsigned int source, unsigned int target) {
     unsigned int i;
 
     /* kontrola parametrů */

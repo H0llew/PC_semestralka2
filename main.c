@@ -3,8 +3,11 @@
 
 #include "console_input.h"
 #include "graph.h"
+#include "nodes_io.h"
+#include "edges_io.h"
 
 #define INPUT_ERROR "Input error!\n"
+#define READ_ERROR "Error while reading files!n"
 #define V_ERROR "Invalid vertex file.\n"
 #define E_ERROR "Invalid edge file.\n"
 
@@ -136,6 +139,7 @@ int main(int argc, char *argv[]) {
     unsigned int flags_len = 4;
     char *flags[] = {"-v", "-e", "-mst", "-mrn"};
     /* vrcholy a hrany */
+    unsigned int read_err = 0;
     node *nodes = NULL;
     edge *edges = NULL;
     unsigned int nodes_len, edges_len;
@@ -160,6 +164,22 @@ int main(int argc, char *argv[]) {
 
         free(flags_val);
         return 1;
+    } else {
+        read_err = read_nodes(argv[flags_val[0]], &nodes, &nodes_len);
+        if (read_err == 1) {
+
+            free(flags_val);
+
+            printf(V_ERROR);
+            return 1;
+        }
+        if (read_err == 2) {
+
+            free(flags_val);
+
+            printf(READ_ERROR);
+            return EXIT_FAILURE;
+        }
     }
 
     /* načti hrany */
@@ -169,6 +189,22 @@ int main(int argc, char *argv[]) {
 
         free(flags_val);
         return 2;
+    } else {
+        read_err = read_edges(argv[flags_val[1]], &edges, &edges_len);
+        if (read_err == 1) {
+
+            free(flags_val);
+
+            printf(E_ERROR);
+            return 2;
+        }
+        if (read_err == 2) {
+
+            free(flags_val);
+
+            printf(READ_ERROR);
+            return EXIT_FAILURE;
+        }
     }
 
     /* proveď mst */

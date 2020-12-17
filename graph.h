@@ -80,4 +80,8 @@ void free_node(node *node);
 
 void free_nodes(node **nodes, unsigned int nodes_len);
 
+void free_edge(edge *edge);
+
+void free_edges(edge **edges, unsigned int edges_len);
+
 #endif

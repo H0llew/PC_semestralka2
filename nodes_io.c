@@ -49,7 +49,7 @@ unsigned int read_nodes(char *file_name, node **nodes, unsigned int *nodes_len) 
     while (fgets(row, MAX_SZ_NODES_LENGTH, file) != NULL) {
         curr = process_node_row(row);
         if (!curr) {
-            free_nodes(&rows, actNode - 1);
+            free_nodes(&rows, actNode);
             /* IDK it depends.. */
             return 1;
         }
@@ -67,7 +67,7 @@ unsigned int read_nodes(char *file_name, node **nodes, unsigned int *nodes_len) 
         }
 
         rows[actNode] = *curr;
-        free_node(curr);
+        /* free_node(curr); */
         free(curr);
         actNode++;
     }
@@ -82,9 +82,6 @@ unsigned int read_nodes(char *file_name, node **nodes, unsigned int *nodes_len) 
     *nodes = malloc(sizeof(node) * actNode);
     if (!(*nodes)) {
         fclose(file);
-        for (i = 0; i < actNode; ++i) {
-            free(rows[i].name);
-        }
         free_nodes(&rows, actNode);
         /* free(rows); */
         return 2;

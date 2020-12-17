@@ -8,8 +8,8 @@
 
 #include <string.h>
 
-#include "../graph.h"
-#include "../reader_utils.h"
+#include "graph.h"
+#include "reader_utils.h"
 
 /** hlavička souboru 1 */
 #define FILE_HEADER_EDGES_1 "WKT,id,nation,cntryname,source,target,clength,,,,,,,,,,,,,,,,,,\n"
@@ -25,26 +25,24 @@
 #define EDGE_COLUMNS 7
 
 /**
- * Zpracuje soubor "file_name" a pokud jsou data souboru validní vrátí je v podobě pole struktur "edgeOLD" o délce "edge_len".
+ * Zpracuje soubor "file_name" a pokud jsou data souboru validní vrátí je v podobě pole struktur hran.
  *
  * @param file_name název souboru
  * @param output výstupní pole hran
  * @param edge_len délka výstupního pole hran
  * @param maxIdOfNodes nejvyšší id vrcholu
  * @return <ul>
- *          <li> 0 -> pokud vše proběhlo v pořádku </li>
- *          <li> 1 -> pokud nebyl nalezen soubor </li>
- *          <li> 2 -> pokud nejsou platné parametry funkce  </li>
- *          <li> 3 -> pokud se nepodařilo soubor načíst </li>
- *          <li> 4 -> pokud se nepodařilo přiřadit paměť </li>
+ *          <li> 0 -> vše proběhlo v pořádku </li>
+ *          <li> 1 -> špatný soubor </li>
+ *          <li> 2 -> chyba čtení souboru </li>
  *         </ul>
  */
 int read_edges(char *file_name, edge **edges, unsigned int *edges_len);
 
 /**
- * Zpracuje načtenou řádku na strukturu "edgeOLD".
+ * Zpracuje načtenou řádku na strukturu hrany.
+ *
  * @param line řádka pro zpracování
- * @param flag přiřadí do paměti 1, pokud nešla přiřadit paměť, jinak 0
  * @return vrchol reprezentující hranu železniční sítě, jinak NULL
  */
 edge *process_edge_row(char *line);
@@ -56,9 +54,10 @@ edge *process_edge_row(char *line);
  * @param rows_len počet řádků
  * @param source odkud
  * @param target kam
- * @return
+ *
+ * @return 0, pokud se hrana ještě neexistuje, jinak -1
  */
-int checkIfExist(edge *rows, unsigned int rows_len, unsigned int source, unsigned int target);
+int check_if_exist(edge *rows, unsigned int rows_len, unsigned int source, unsigned int target);
 
 /**
  * Zapíše poskytnuté hrany do souboru "file_name".

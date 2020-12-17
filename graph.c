@@ -132,8 +132,8 @@ void free_nodes(node **nodes, unsigned int nodes_len) {
         return;
 
     for (i = 0; i < nodes_len; ++i) {
-        /* free(&(*nodes)[i].name); */
-        free(&(*nodes)[i]);
+        /* free((*nodes + i)->name); */
+        free_node((*nodes + i));
     }
     free(*nodes);
     *nodes = NULL;
@@ -144,4 +144,25 @@ void free_node(node *node) {
         return;
 
     free(node->name);
+}
+
+void free_edges(edge **edges, unsigned int edges_len) {
+    unsigned int i;
+
+    if (!edges || !(*edges) || edges_len == 0)
+        return;
+
+    for (i = 0; i < edges_len; ++i) {
+        free_edge(*edges + i);
+    }
+    free(*edges);
+    *edges = NULL;
+}
+
+void free_edge(edge *edge) {
+    if (!edge)
+        return;
+
+    free(edge->wkt);
+    free(edge->nation_name);
 }
