@@ -3,7 +3,7 @@
 
 #include <math.h>
 #include <stdlib.h>
-#include "graph.h"
+#include "../graph.h"
 #include "kruskal_mst.h"
 #include "../io/edges_io.h"
 

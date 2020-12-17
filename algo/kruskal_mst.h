@@ -2,7 +2,7 @@
 #define KRUSKAL_MST_H
 
 #include <stdlib.h>
-#include "graph.h"
+#include "../graph.h"
 
 /**
  * \struct podgraf pro union-find

@@ -25,16 +25,17 @@ graph *create_graphs(node *nodes, unsigned int nodes_len,
                      edge *edges, unsigned int edges_len,
                      unsigned int components) {
 
-    graph *gs = NULL, *g = NULL;
+    graph *gs = NULL;
     unsigned int *nodes_in_component_count = NULL;
     unsigned int *vertex_in_component_count = NULL;
     unsigned int i, j, d;
     int comp;
 
-    /* kontrola vstupu */
+    /* kontrola parametrů */
     if (!nodes || nodes_len == 0 || !edges || edges_len == 0 || components == 0)
         return NULL;
 
+    /* mem */
     gs = malloc(sizeof(graph) * components);
     if (!gs)
         return NULL;
@@ -52,36 +53,52 @@ graph *create_graphs(node *nodes, unsigned int nodes_len,
         return NULL;
     }
 
+    /* vynuluj mi pole počtů vrcholů a hran */
     for (i = 0; i < components; ++i) {
         nodes_in_component_count[i] = 0;
         vertex_in_component_count[i] = 0;
     }
 
+    /* přiřaď mi ke každé komponentě počet jejich vrcholů */
     for (i = 0; i < nodes_len; ++i) {
         comp = nodes[i].component;
-        if (comp > (int) components) {
+        if (comp > (int) components || comp < 0) {
+            /* špatné ignorujeme */
             continue;
         }
         nodes_in_component_count[comp]++;
     }
 
+    /* přiřaď mi ke každé komponentě počet jejich hran */
     for (i = 0; i < edges_len; ++i) {
         comp = edges[i].component;
-        if (comp > (int) components) {
+        if (comp > (int) components || comp < 0) {
+            /* špatné ignorujeme */
             continue;
         }
         vertex_in_component_count[comp]++;
     }
 
     for (i = 0; i < components; ++i) {
+        /*
         g = malloc(sizeof(graph));
-        if (!g)
+        if (!g) {
             return NULL;
+        }
+        */
 
-        g->e = vertex_in_component_count[i];
-        g->v = nodes_in_component_count[i];
+        gs[i].mst = NULL;
+        gs[i].e = vertex_in_component_count[i];
+        gs[i].v = nodes_in_component_count[i];
 
-        g->edges = malloc(sizeof(edge) * g->e);
+        gs[i].edges = malloc(sizeof(edge) * gs[i].e);
+        if (!gs[i].edges) {
+            for (j = i - 1; i >= 0; ++i) {
+                free(gs[j].edges);
+            }
+            free(gs);
+            return NULL;
+        }
         /*
         for (j = 0; j < g->e; ++j) {
             for (d = 0; d < edges_len; ++d) {
@@ -94,18 +111,37 @@ graph *create_graphs(node *nodes, unsigned int nodes_len,
         d = 0;
         for (j = 0; j < edges_len; j++) {
             if (edges[j].component == (int) i) {
-                g->edges[d] = edges[j];
+                gs[i].edges[d] = edges[j];
                 d++;
             }
 
-            if (d == g->e)
+            if (d == gs[i].e)
                 break;
         }
-
-        *(gs + i) = *g;
-        free(g);
+        /* free(g); */
     }
 
     return gs;
 }
 
+void free_nodes(node **nodes, unsigned int nodes_len) {
+    unsigned int i;
+
+    /* kontrola parametrů*/
+    if (!nodes || !(*nodes) || nodes_len == 0)
+        return;
+
+    for (i = 0; i < nodes_len; ++i) {
+        /* free(&(*nodes)[i].name); */
+        free(&(*nodes)[i]);
+    }
+    free(*nodes);
+    *nodes = NULL;
+}
+
+void free_node(node *node) {
+    if (!node)
+        return;
+
+    free(node->name);
+}

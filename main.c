@@ -1,31 +1,34 @@
 #include <stdio.h>
+#include <stdlib.h>
 
-#include "algo/graph.h"
-#include "io/edges_io.h"
-#include "io/nodes_io.h"
-#include "algo/component_finder.h"
-#include "algo/kruskal_mst.h"
-#include "algo/mst.h"
-#include "algo/mrn.h"
+#include "console_input.h"
+#include "graph.h"
 
-int mainXXXXXX(int argc, char *argv[]) {
+#define INPUT_ERROR "Input error!\n"
+#define V_ERROR "Invalid vertex file.\n"
+#define E_ERROR "Invalid edge file.\n"
+
+void mainXXXXXX(int argc, char *argv[]) {
+    /*
     unsigned int i, j;
-    int res;
+    int res;*/
     /* --- */
-    edge *edges = NULL;
+    /*edge *edges = NULL;
     unsigned int edges_len, neighbours_len;
-    unsigned int *neighbours = NULL;
+    unsigned int *neighbours = NULL;*/
     /* --- */
-    node *nodes = NULL;
-    unsigned int nodes_len;
+    /*node *nodes = NULL;
+    unsigned int nodes_len;*/
     /* --- */
-    unsigned int *mark = NULL;
-    /* --- */
-    graph *graphs = NULL;
-    unsigned int graphs_len = 0; /* AKA počet komponent */
+    /*unsigned int *mark = NULL;
+     --- */
+    /*
+    graph *graphs = NULL;*//*
+    unsigned int graphs_len = 0;*/ /* AKA počet komponent */
 
+    /*
     printf("Hello, World!\n");
-
+     */
     /* GROUP */
     /*
     edges = malloc(sizeof(edge) * 6);
@@ -77,6 +80,7 @@ int mainXXXXXX(int argc, char *argv[]) {
     }
     */
 
+    /*
     nodes_len = 0;
     edges_len = 0;
 
@@ -84,12 +88,16 @@ int mainXXXXXX(int argc, char *argv[]) {
     read_edges(argv[2], &edges, &edges_len);
 
     mst(nodes, nodes_len, edges, edges_len, argv[3]);
+     */
     /* create_edges_file(argv[3], edges, edges_len); */
 
+    /*
     return 0;
+     */
 }
 
-int mainXX(int argc, char *argv[]) {
+void mainXX(int argc, char *argv[]) {
+    /*
     int err = 0;
 
     node *nodes = NULL;
@@ -98,10 +106,12 @@ int mainXX(int argc, char *argv[]) {
     read_nodes(argv[1], &nodes, &nodes_len);
 
     return 0;
+     */
 }
 
-int main(int argc, char *argv[]) {
+void mainaaaa(int argc, char *argv[]) {
 
+    /*
     edge *edges = NULL;
     unsigned int edges_len = 0, i;
 
@@ -116,4 +126,63 @@ int main(int argc, char *argv[]) {
     mrn(argv[4], nodes, nodes_len);
 
     return 0;
+     */
+}
+
+int main(int argc, char *argv[]) {
+    unsigned int i;
+    /* vstup z konzole */
+    int *flags_val = NULL;
+    unsigned int flags_len = 4;
+    char *flags[] = {"-v", "-e", "-mst", "-mrn"};
+    /* vrcholy a hrany */
+    node *nodes = NULL;
+    edge *edges = NULL;
+    unsigned int nodes_len, edges_len;
+
+    /* zpracuj vstup z konzole */
+    flags_val = get_input_indexes(argc, argv, flags_len, flags);
+    if (!flags_val) {
+        printf(INPUT_ERROR);
+        return EXIT_FAILURE;
+    }
+
+    /* zkontrolu zda byl zadán alespoň 1 nepovinný přepínač */
+    if (flags_val[2] == 0 && flags_val[3] == 0) {
+        free(flags_val);
+        return EXIT_SUCCESS;
+    }
+
+    /* načti vrcholy */
+    if (flags_val[0] == 0) {
+        printf(V_ERROR);
+
+
+        free(flags_val);
+        return 1;
+    }
+
+    /* načti hrany */
+    if (flags_val[1] == 0) {
+        printf(E_ERROR);
+
+
+        free(flags_val);
+        return 2;
+    }
+
+    /* proveď mst */
+    if (flags_val[2] != 0) {
+
+    }
+
+    /* proveď mrn */
+    if (flags_val[3] != 0) {
+
+    }
+
+    /* uvolni paměť */
+    free(flags_val);
+
+    return EXIT_SUCCESS;
 }

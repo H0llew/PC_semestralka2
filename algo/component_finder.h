@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-#include "graph.h"
+#include "../graph.h"
 
 /**
  * Funkce zjistí všechny sousedy zadaného vrcholu, tak že projde všechny zadané hrany grafu.

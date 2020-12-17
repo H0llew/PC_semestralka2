@@ -26,14 +26,14 @@ unsigned int read_nodes(char *file_name, node **nodes, unsigned int *nodes_len) 
     if (file_length < 2) {
         /* soubor jen s hlavičkou asi smysl nedává */
         fclose(file);
-        return 3;
+        return 1;
     }
 
     /* přiřaď pamět potřebnou pro zpracování a načtení všech řádků */
-    rows = malloc(sizeof(node) * file_length);
+    rows = malloc(sizeof(node) * (file_length - 1));
     if (!rows) {
         fclose(file);
-        return 4;
+        return 2;
     }
 
     /* zkontroluj hlavičku souboru */
@@ -41,7 +41,7 @@ unsigned int read_nodes(char *file_name, node **nodes, unsigned int *nodes_len) 
     if (strcmp(row, FILE_NODES_HEADER) != 0) {
         free(rows);
         fclose(file);
-        return 3;
+        return 1;
     }
 
     /* projdi a zpracuj data souboru */
@@ -49,9 +49,9 @@ unsigned int read_nodes(char *file_name, node **nodes, unsigned int *nodes_len) 
     while (fgets(row, MAX_SZ_NODES_LENGTH, file) != NULL) {
         curr = process_node_row(row);
         if (!curr) {
-
+            free_nodes(&rows, actNode - 1);
             /* IDK it depends.. */
-            continue;
+            return 1;
         }
 
         /* vyfiltruj špatná data */
@@ -60,12 +60,14 @@ unsigned int read_nodes(char *file_name, node **nodes, unsigned int *nodes_len) 
         if (actNode > 0) {
             /* id duplicita */
             if (rows[actNode - 1].id == curr->id) {
+                free_node(curr);
                 free(curr);
                 continue; /* SKIP -> id jsou stejné */
             }
         }
 
         rows[actNode] = *curr;
+        free_node(curr);
         free(curr);
         actNode++;
     }
@@ -83,8 +85,9 @@ unsigned int read_nodes(char *file_name, node **nodes, unsigned int *nodes_len) 
         for (i = 0; i < actNode; ++i) {
             free(rows[i].name);
         }
-        free(rows);
-        return 3;
+        free_nodes(&rows, actNode);
+        /* free(rows); */
+        return 2;
     }
 
     memcpy(*nodes, rows, sizeof(node) * actNode);
@@ -99,14 +102,15 @@ unsigned int read_nodes(char *file_name, node **nodes, unsigned int *nodes_len) 
     /* uvolni paměť */
 
     fclose(file);
-    free(rows);
+    /* free(rows); */
+    free_nodes(&rows, actNode);
 
     return 0;
 }
 
 node *process_node_row(char *line) {
     unsigned int step = 0;
-    char *wkt_token, *p_end, *p_end2;
+    char *wkt_token = NULL, *p_end = NULL, *p_end2 = NULL;
     char cols[COLUMNS][MAX_SZ_NODES_LENGTH];
     /* prvky vrcholu */
     double x, y;
@@ -117,7 +121,7 @@ node *process_node_row(char *line) {
     /* pro rozdělení řádky */
     char *token = NULL;
 
-    /* ověření parametrů */
+    /* kontrola parametrů */
     if (!line)
         return NULL;
 

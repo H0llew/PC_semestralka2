@@ -62,7 +62,7 @@ typedef struct graph_t {
 int get_node_pos(unsigned int n, node *nodes, unsigned int nodes_len);
 
 /**
- * Vytvoří grafy z pole hran a vrcholů, podle komponent prvků
+ * Vytvoří grafy z pole hran a vrcholů, pro zadaný počet komponent
  *
  * @param nodes pole vrcholů
  * @param nodes_len délka pole vrcholů
@@ -75,5 +75,9 @@ int get_node_pos(unsigned int n, node *nodes, unsigned int nodes_len);
 graph *create_graphs(node *nodes, unsigned int nodes_len,
                      edge *edges, unsigned int edges_len,
                      unsigned int components);
+
+void free_node(node *node);
+
+void free_nodes(node **nodes, unsigned int nodes_len);
 
 #endif
