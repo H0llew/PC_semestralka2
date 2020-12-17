@@ -220,5 +220,13 @@ int main(int argc, char *argv[]) {
     /* uvolni paměť */
     free(flags_val);
 
+    for (i = 0; i < nodes_len; ++i) {
+        printf("-> (%f,%f) %d %s \n", nodes[i].longitude, nodes[i].latitude, nodes[i].id, nodes[i].name);
+    }
+    for (i = 0; i < edges_len; ++i) {
+        printf("\n -> %s : %d [%d,%d] %s %d %f \n", edges[i].wkt, edges[i].id, edges[i].source, edges[i].target,
+               edges[i].nation_name, edges[i].nation_id, edges[i].weight);
+    }
+
     return EXIT_SUCCESS;
 }

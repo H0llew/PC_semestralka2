@@ -100,7 +100,7 @@ unsigned int read_nodes(char *file_name, node **nodes, unsigned int *nodes_len) 
 
     fclose(file);
     /* free(rows); */
-    free_nodes(&rows, actNode);
+    /* free_nodes(&rows, actNode); */
 
     return 0;
 }
