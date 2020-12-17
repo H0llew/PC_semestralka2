@@ -2,7 +2,7 @@
 #define MST_H
 
 #include "../graph.h"
-#include "component_finder.h"
+#include "../component_finder.h"
 #include "kruskal_mst.h"
 
 /**
