@@ -130,10 +130,6 @@ void free_nodes(node **nodes, unsigned int nodes_len) {
     /* kontrola parametrů*/
     if (!nodes || !(*nodes))
         return;
-    if (nodes_len == 0) {
-        free(*nodes);
-        *nodes = NULL;
-    }
 
     for (i = 0; i < nodes_len; ++i) {
         /* free((*nodes + i)->name); */
@@ -153,7 +149,7 @@ void free_node(node *node) {
 void free_edges(edge **edges, unsigned int edges_len) {
     unsigned int i;
 
-    if (!edges || !(*edges) || edges_len == 0)
+    if (!edges || !(*edges))
         return;
 
     for (i = 0; i < edges_len; ++i) {

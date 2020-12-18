@@ -51,6 +51,7 @@ int read_edges(char *file_name, edge **edges, unsigned int *edges_len) {
              */
             /* IDK it depends... 0*/
             free_edges(&rows, actEdge);
+            fclose(file);
             return 1;
         }
 
