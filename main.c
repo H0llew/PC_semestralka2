@@ -180,25 +180,22 @@ int main(int argc, char *argv[]) {
     if (flags_val[1] == 0) {
         printf(E_ERROR);
         free(flags_val);
+        free_nodes(&nodes, nodes_len);
         return 2;
     } else {
-        /*
         read_err = read_edges(argv[flags_val[1]], &edges, &edges_len);
         if (read_err == 1) {
-
             free(flags_val);
-
+            free_nodes(&nodes, nodes_len);
             printf(E_ERROR);
             return 2;
         }
         if (read_err == 2) {
-
             free(flags_val);
-
+            free_nodes(&nodes, nodes_len);
             printf(READ_ERROR);
             return EXIT_FAILURE;
         }
-        */
     }
 
     /* proveď mst */
@@ -214,6 +211,7 @@ int main(int argc, char *argv[]) {
     /* uvolni paměť */
     free(flags_val);
     free_nodes(&nodes, nodes_len);
+    free_edges(&edges, edges_len);
 
     /*
     for (i = 0; i < nodes_len; ++i) {
