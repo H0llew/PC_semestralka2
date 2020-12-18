@@ -128,8 +128,12 @@ void free_nodes(node **nodes, unsigned int nodes_len) {
     unsigned int i;
 
     /* kontrola parametrů*/
-    if (!nodes || !(*nodes) || nodes_len == 0)
+    if (!nodes || !(*nodes))
         return;
+    if (nodes_len == 0) {
+        free(*nodes);
+        *nodes = NULL;
+    }
 
     for (i = 0; i < nodes_len; ++i) {
         /* free((*nodes + i)->name); */

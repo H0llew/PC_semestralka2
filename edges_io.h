@@ -7,6 +7,8 @@
 #define EDGES_IO_H
 
 #include <string.h>
+#include <stdio.h>
+#include <errno.h>
 
 #include "graph.h"
 #include "reader_utils.h"

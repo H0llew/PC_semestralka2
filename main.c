@@ -160,23 +160,17 @@ int main(int argc, char *argv[]) {
     /* načti vrcholy */
     if (flags_val[0] == 0) {
         printf(V_ERROR);
-
-
         free(flags_val);
         return 1;
     } else {
         read_err = read_nodes(argv[flags_val[0]], &nodes, &nodes_len);
         if (read_err == 1) {
-
             free(flags_val);
-
             printf(V_ERROR);
             return 1;
         }
         if (read_err == 2) {
-
             free(flags_val);
-
             printf(READ_ERROR);
             return EXIT_FAILURE;
         }
@@ -185,11 +179,10 @@ int main(int argc, char *argv[]) {
     /* načti hrany */
     if (flags_val[1] == 0) {
         printf(E_ERROR);
-
-
         free(flags_val);
         return 2;
     } else {
+        /*
         read_err = read_edges(argv[flags_val[1]], &edges, &edges_len);
         if (read_err == 1) {
 
@@ -205,6 +198,7 @@ int main(int argc, char *argv[]) {
             printf(READ_ERROR);
             return EXIT_FAILURE;
         }
+        */
     }
 
     /* proveď mst */
@@ -219,7 +213,9 @@ int main(int argc, char *argv[]) {
 
     /* uvolni paměť */
     free(flags_val);
+    free_nodes(&nodes, nodes_len);
 
+    /*
     for (i = 0; i < nodes_len; ++i) {
         printf("-> (%f,%f) %d %s \n", nodes[i].longitude, nodes[i].latitude, nodes[i].id, nodes[i].name);
     }
@@ -227,6 +223,7 @@ int main(int argc, char *argv[]) {
         printf("\n -> %s : %d [%d,%d] %s %d %f \n", edges[i].wkt, edges[i].id, edges[i].source, edges[i].target,
                edges[i].nation_name, edges[i].nation_id, edges[i].weight);
     }
+    */
 
     return EXIT_SUCCESS;
 }

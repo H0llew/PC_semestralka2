@@ -50,7 +50,7 @@ unsigned int read_nodes(char *file_name, node **nodes, unsigned int *nodes_len) 
         curr = process_node_row(row);
         if (!curr) {
             free_nodes(&rows, actNode);
-            /* IDK it depends.. */
+            fclose(file);
             return 1;
         }
 
@@ -98,6 +98,7 @@ unsigned int read_nodes(char *file_name, node **nodes, unsigned int *nodes_len) 
 
     /* uvolni paměť */
 
+    free(rows);
     fclose(file);
     /* free(rows); */
     /* free_nodes(&rows, actNode); */
