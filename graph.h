@@ -76,14 +76,42 @@ graph *create_graphs(node *nodes, unsigned int nodes_len,
                      edge *edges, unsigned int edges_len,
                      unsigned int components);
 
+/**
+ * Uvolní paměť vrcholu
+ *
+ * @param node vrchol
+ */
 void free_node(node *node);
 
+/**
+ * Uvolní paměť pole vrcholů
+ *
+ * @param nodes pole vrcholů
+ * @param nodes_len délka pole vrcholů
+ */
 void free_nodes(node **nodes, unsigned int nodes_len);
 
+/**
+ * Uvolní paměť hrany
+ *
+ * @param edge hrany
+ */
 void free_edge(edge *edge);
 
+/**
+ * Uvolní paměť hranám
+ *
+ * @param edges pole hran
+ * @param edges_len délka pole hran
+ */
 void free_edges(edge **edges, unsigned int edges_len);
 
+/**
+ * Uvolní paměť grafů
+ *
+ * @param graphs pole grafů
+ * @param graphs_len délka pole grafů
+ */
 void free_graphs(graph **graphs, unsigned int graphs_len);
 
 #endif
