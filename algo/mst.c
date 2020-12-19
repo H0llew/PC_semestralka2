@@ -24,22 +24,29 @@ int mst(node *nodes, unsigned int nodes_len, edge *edges, unsigned int edges_len
 
     /* proveď Kruskalův algoritmus pro každou komponentu */
     res = do_msts(graphs, components, nodes, nodes_len);
-    if (res == -1)
+    if (res == -1) {
+        /* uvolni pamět */
         return -1;
+    }
 
     /* propoj všechny hrany ve všech komponentách a seřaď je */
     res = join_edges(graphs, components, &union_edges, &union_edges_len);
-    if (res == -1)
+    if (res == -1) {
+        /* uvolni paměť */
         return -1;
+    }
 
     qsort(union_edges, union_edges_len, sizeof(edge), compare_edges_id);
 
-    for (i = 0; i < union_edges_len; ++i) {
-        printf("%d", union_edges[i].id);
+    /* zapiš výsledek do souboru */
+    res = create_edges_file(output_file, union_edges, union_edges_len);
+    if (res == -1) {
+        /* uvolni paměť */
+
+        return -1;
     }
 
-    /* zapiš výsledek do souboru */
-    create_edges_file(output_file, union_edges, union_edges_len);
+    /* uvolni paměť */
 
     return 0;
 }
@@ -48,7 +55,7 @@ int join_edges(graph *graphs, unsigned int components, edge **edges, unsigned in
     unsigned int count, i, j, k;
 
     /* kontrola vstupu */
-    if (!graphs || !graphs->mst || graphs->v == 0 || graphs->e == 0 || components == 0 || !edges || !edges_len)
+    if (!graphs || !graphs->mst || graphs->v == 0 || graphs->e == 0 || components == 0 || !edges)
         return -1;
 
     /* zjisti kolik hran je celkem ze všech mst */
@@ -65,7 +72,7 @@ int join_edges(graph *graphs, unsigned int components, edge **edges, unsigned in
     k = 0;
     for (i = 0; i < components; ++i) {
         for (j = 0; j < (graphs[i].v - 1); ++j) {
-            (*edges)[k] = graphs[i].edges[j];
+            (*edges)[k] = graphs[i].mst[j];
             k++;
         }
     }
@@ -83,9 +90,9 @@ int compare_edges_id(const void *e1, const void *e2) {
     e1_w = ((edge *) e1)->id;
     e2_w = ((edge *) e2)->id;
 
-    if (e1_w < e2_w)
+    if (e1_w > e2_w)
         return -1;
-    else if (e1_w > e2_w)
+    else if (e1_w < e2_w)
         return 1;
     else
         return 0;

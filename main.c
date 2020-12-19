@@ -5,11 +5,13 @@
 #include "graph.h"
 #include "nodes_io.h"
 #include "edges_io.h"
+#include "algo/mst.h"
 
 #define INPUT_ERROR "Input error!\n"
 #define READ_ERROR "Error while reading files!n"
 #define V_ERROR "Invalid vertex file.\n"
 #define E_ERROR "Invalid edge file.\n"
+#define MST_ERROR "Error while performing -mst!"
 
 void mainXXXXXX(int argc, char *argv[]) {
     /*
@@ -143,6 +145,10 @@ int main(int argc, char *argv[]) {
     node *nodes = NULL;
     edge *edges = NULL;
     unsigned int nodes_len, edges_len;
+    /* mst a mrn */
+    int res;
+
+    graph *g = NULL;
 
     /* zpracuj vstup z konzole */
     flags_val = get_input_indexes(argc, argv, flags_len, flags);
@@ -200,7 +206,14 @@ int main(int argc, char *argv[]) {
 
     /* proveď mst */
     if (flags_val[2] != 0) {
-
+        res = mst(nodes, nodes_len, edges, edges_len, argv[flags_val[2]]);
+        if (res == -1) {
+            free(flags_val);
+            free_nodes(&nodes, nodes_len);
+            free_edges(&edges, edges_len);
+            printf(MST_ERROR);
+            return EXIT_FAILURE;
+        }
     }
 
     /* proveď mrn */
@@ -212,7 +225,6 @@ int main(int argc, char *argv[]) {
     free(flags_val);
     free_nodes(&nodes, nodes_len);
     free_edges(&edges, edges_len);
-
     /*
     for (i = 0; i < nodes_len; ++i) {
         printf("-> (%f,%f) %d %s \n", nodes[i].longitude, nodes[i].latitude, nodes[i].id, nodes[i].name);

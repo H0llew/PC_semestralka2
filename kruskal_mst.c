@@ -17,13 +17,13 @@ int union_union(subset subsets[], int a, int b) {
 
     /* zkontroluj parametry */
     if (!subsets || a < 0 || b < 0)
-        return 1;
+        return -1;
 
     /* najdi kořen "a" a "b" tj. hrany [a;b]*/
     x_root = union_find(subsets, a);
     y_root = union_find(subsets, b);
     if (x_root < 0 || y_root < 0)
-        return 1;
+        return -1;
 
     /* proveď přiřazení a zarovnání */
     if (subsets[x_root].rank < subsets[y_root].rank)
@@ -56,63 +56,49 @@ int compare_edges_weight(const void *e1, const void *e2) {
 
 int create_mst(graph *g, node *nodes, unsigned int nodes_len, subset subsets[]) {
     unsigned int e, i;
-    int a, b;
-    /* subset *subsets = NULL; */
-    edge *mst = NULL;
+    int a, b, res;
 
-    /* ověření parametrů */
-    if (!g || !g->edges || g->e == 0 || g->v == 0)
-        return 1;
-
-    /* nemá cenu řešit mst */
-    if (g->e == 0 || g->v == 1)
-        return 1;
+    /* kontrola parametrů */
+    if (!g || !g->edges || g->e == 0 || g->v <= 1 || !nodes || nodes_len == 0 || !subsets)
+        return -1;
 
     /* 1. krok algoritmu -> seřaď prvky podle váhy(délky tratě) vzestupně */
     qsort(g->edges, g->e, sizeof(edge), compare_edges_weight);
 
     /* 2. a 3. krok algoritmu -> hledej a přiřazuj nejlevnější váhy(délky tratě) a kontroluj cykly*/
-
-    /*
-    / alokuj paměť pro mst /
-    subsets = malloc(sizeof(subset) * g->v);
-    if (!subsets)
-        return 3;
-    / počáteční stav subsetu /
-    for (i = 0; i < g->v; ++i) {
-        subsets[i].parent = (int) i;
-        subsets[i].rank = 0;
-    }
-    */
-
-    mst = malloc(sizeof(edge) * (g->v - 1));
-    if (!mst)
-        return 1;
+    g->mst = malloc(sizeof(edge) * (g->v - 1));
+    if (!g->mst)
+        return -1;
 
     /* opakuj 2. a 3. krok algoritmu*/
     e = 0;
     i = 0;
     while (e < (g->v - 1) && i < (g->e)) {
-
-        edge curr = g->edges[i];
-
-        /* zkontroluj cyklus a popřípadě přiřad hranu do mst */
-        /* a = union_find(subsets, (int) (curr.source - 1)); */
-        /* b = union_find(subsets, (int) (curr.target - 1)); */
-        a = union_find(subsets, get_node_pos(curr.source, nodes, nodes_len));
-        b = union_find(subsets, get_node_pos(curr.target, nodes, nodes_len));
+        /* curr = g->edges[i]; */
+        a = union_find(subsets, get_node_pos(g->edges[i].source, nodes, nodes_len));
+        b = union_find(subsets, get_node_pos(g->edges[i].target, nodes, nodes_len));
+        if (a == -1 || b == -1) {
+            /* protože shallow copy stačí */
+            free(g->mst);
+            g->mst = NULL;
+            return -1;
+        }
 
         if (a != b) {
-            mst[e] = curr;
-            union_union(subsets, a, b);
+            g->mst[e] = g->edges[i];
+            res = union_union(subsets, a, b);
+            if (res == -1) {
+                /* protože shallow copy stačí */
+                free(g->mst);
+                g->mst = NULL;
+                return -1;
+            }
             e++;
         }
 
         i++;
     }
-
-    g->mst = mst;
-
+    /* g->mst = mst; */
     return 0;
 }
 
@@ -123,7 +109,7 @@ int do_msts(graph *graphs, unsigned int components, node *nodes, unsigned int no
 
     /* kontrola parametrů */
     if (!graphs || components == 0 || !nodes || nodes_len == 0)
-        return 1;
+        return -1;
 
     /* vytvoř subset */
     subsets = malloc(sizeof(subset) * nodes_len);
@@ -135,11 +121,12 @@ int do_msts(graph *graphs, unsigned int components, node *nodes, unsigned int no
     for (i = 0; i < components; ++i) {
         /* projdi všechny komponenty grafu */
         res = create_mst(&graphs[i], nodes, nodes_len, subsets);
-        if (res == 1)
-            return 1;
+        if (res == -1) {
+            free(subsets);
+            return -1;
+        }
     }
 
     free(subsets);
-
     return 0;
 }

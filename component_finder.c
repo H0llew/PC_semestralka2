@@ -21,24 +21,24 @@ void find_neighbours(unsigned int n,
     nbs_count = 0;
     /* hledání sousedů */
     for (i = 0; i < edges_len; ++i) {
-        edge curr = edges[i];
+        /* edge curr = edges[i]; */
         /* najdi zda v hraně je hledaný vrchol */
-        if (curr.target == n || curr.source == n) {
+        if (edges[i].target == n || edges[i].source == n) {
             /* v hraně je hledaný vrchol => hrana patří do stejné komponenty jako zadaný vrchol*/
             /*
             edges[i].component = (int) component;
             nodes[get_node_pos(curr.target, nodes, nodes_len)].component = (int) component;
             nodes[get_node_pos(curr.source, nodes, nodes_len)].component = (int) component;
             */
-            src_pos = get_node_pos(curr.source, nodes, nodes_len);
-            trg_pos = get_node_pos(curr.target, nodes, nodes_len);
+            src_pos = get_node_pos(edges[i].source, nodes, nodes_len);
+            trg_pos = get_node_pos(edges[i].target, nodes, nodes_len);
             if (src_pos == -1 || trg_pos == -1)
                 continue;
 
             edges[i].component = (int) component;
 
             /* přidej souseda to dočasného pole sousedů */
-            nbs_temp[nbs_count] = (curr.target == n) ? curr.source : curr.target;
+            nbs_temp[nbs_count] = (edges[i].target == n) ? edges[i].source : edges[i].target;
             nbs_count++;
         }
     }

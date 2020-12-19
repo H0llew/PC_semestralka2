@@ -1,0 +1,16 @@
+WKT,id,nation,cntryname,source,target,clength
+"MULTILINESTRING ((1 1,9 9))",1,0,Czech republic,1,9,100
+"MULTILINESTRING ((1 1,2 2))",2,0,Czech republic,1,2,20
+"MULTILINESTRING ((2 2,9 9))",3,0,Czech republic,2,9,30
+"MULTILINESTRING ((2 2,3 3))",4,0,Czech republic,2,3,500
+"MULTILINESTRING ((2 2,8 8))",5,0,Czech republic,2,8,10000
+"MULTILINESTRING ((3 3,8 8))",6,0,Czech republic,3,8,80
+"MULTILINESTRING ((8 8,7 7))",7,0,Czech republic,8,7,60
+"MULTILINESTRING ((7 7,5 5))",8,0,Czech republic,7,5,1
+"MULTILINESTRING ((7 7,6 6))",9,0,Czech republic,7,6,5
+"MULTILINESTRING ((6 6,5 5))",10,0,Czech republic,6,5,1
+"MULTILINESTRING ((6 6,3 3))",11,0,Czech republic,6,3,30
+"MULTILINESTRING ((4 4,6 6))",12,0,Czech republic,4,6,20
+"MULTILINESTRING ((4 4,5 5))",13,0,Czech republic,4,5,2
+"MULTILINESTRING ((4 4,3 3))",14,0,Czech republic,4,3,10
+"MULTILINESTRING ((3 3,1 1))",15,0,Czech republic,3,1,40

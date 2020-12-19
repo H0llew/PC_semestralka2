@@ -93,10 +93,12 @@ graph *create_graphs(node *nodes, unsigned int nodes_len,
 
         gs[i].edges = malloc(sizeof(edge) * gs[i].e);
         if (!gs[i].edges) {
-            for (j = i - 1; i >= 0; ++i) {
+            for (j = i - 1; j >= 0; ++j) {
                 free(gs[j].edges);
             }
             free(gs);
+            free(nodes_in_component_count);
+            free(vertex_in_component_count);
             return NULL;
         }
         /*
@@ -120,6 +122,9 @@ graph *create_graphs(node *nodes, unsigned int nodes_len,
         }
         /* free(g); */
     }
+
+    free(nodes_in_component_count);
+    free(vertex_in_component_count);
 
     return gs;
 }

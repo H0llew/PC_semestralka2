@@ -4,7 +4,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include "../graph.h"
-#include "kruskal_mst.h"
+#include "../kruskal_mst.h"
 #include "../edges_io.h"
 
 int mrn(char *file_name, node *nodes, unsigned int nodes_len);

@@ -2,7 +2,7 @@
 #define KRUSKAL_MST_H
 
 #include <stdlib.h>
-#include "../graph.h"
+#include "graph.h"
 
 /**
  * \struct podgraf pro union-find
@@ -14,12 +14,11 @@ typedef struct subset_t {
 } subset;
 
 /**
- * Funkce hledá s kterým vrcholem je hledaný vrchol i spojen.
- * Zároveň funkce komprimuje cestu k hledanému vrcholu.
+ * Funkce hledá s kterým vrcholem je hledaný vrchol propojen.
  *
  * @param subsets pole podgrafů
  * @param i prohledávaný vrchol
- * @return vrchol tvořící hranu s prohledávaným vrcholem
+ * @return vrchol tvořící hranu s prohledávaným vrcholem nebo -1
  */
 int union_find(subset subsets[], int i);
 
@@ -29,7 +28,7 @@ int union_find(subset subsets[], int i);
  * @param subsets pole podgrafů
  * @param a prvý vrchol hrany
  * @param b druhý vrchol hrany
- * @return 0 pokud vše proběhlo v pořádku, jinak 1
+ * @return 0 pokud vše proběhlo v pořádku, jinak -1
  */
 int union_union(subset subsets[], int a, int b);
 
@@ -50,7 +49,7 @@ int compare_edges_weight(const void *e1, const void *e2);
  * Funkce vytvoří minimální kostru zadaného grafu pomocí Kruskalova algoritmu
  *
  * @param g graf ve kterém hledáme minimální kostru
- * @return 0 pokud algoritmus proběhl v pořádku, jinak 1
+ * @return 0 pokud algoritmus proběhl v pořádku, jinak -1
  */
 int create_mst(graph *g, node *nodes, unsigned int nodes_len, subset subsets[]);
 
@@ -62,7 +61,7 @@ int create_mst(graph *g, node *nodes, unsigned int nodes_len, subset subsets[]);
  * @param nodes pole vrcholů
  * @param nodes_len délka pole vrcholů
  *
- * @return 0 pokud vše proběhlo v pořádku, jinak 1
+ * @return 0 pokud vše proběhlo v pořádku, jinak -1
  */
 int do_msts(graph *graphs, unsigned int components, node *nodes, unsigned int nodes_len);
 

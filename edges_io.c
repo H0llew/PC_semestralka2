@@ -87,6 +87,19 @@ int read_edges(char *file_name, edge **edges, unsigned int *edges_len) {
 
         rows[actEdge] = *curr;
         /* free_edge(curr); */
+
+        /* test */
+        /*
+        curr->target = 10;
+        printf("\n[------------------]");
+        printf("\n -> %s : %d [%d,%d] %s %d %f \n", rows[actEdge].wkt, rows[actEdge].id, rows[actEdge].source,
+               rows[actEdge].target,
+               rows[actEdge].nation_name, rows[actEdge].nation_id, rows[actEdge].weight);
+        printf("\n -> %s : %d [%d,%d] %s %d %f \n", curr->wkt, curr->id, curr->source,
+               curr->target, curr->nation_name, curr->nation_id, curr->weight);
+        printf("[------------------]\n");
+        */
+
         free(curr);
         actEdge++;
     }
@@ -259,8 +272,10 @@ int create_edges_file(char *file_name, edge *edges, unsigned int edges_len) {
     fputs(FILE_HEADER_EDGES_1, file);
     for (i = 0; i < edges_len; ++i) {
         buffer = malloc(sizeof(char) * MAX_EDGES_ROW_LENGTH);
-        if (!buffer)
+        if (!buffer) {
+            free(file);
             return -1;
+        }
 
         sprintf(buffer, "%s,%d,%u,%s,%d,%d,%f,,,,,,,,,,,,,,,,,,\n",
                 edges[i].wkt, edges[i].id, edges[i].nation_id,
