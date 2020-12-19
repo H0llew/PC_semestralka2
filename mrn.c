@@ -21,6 +21,7 @@ int mrn(node *nodes, unsigned int nodes_len, char *file_name) {
         return -1;
     }
 
+    reverse_edges(&g->mst, nodes_len - 1);
     res = attach_edges_info(g->mst, nodes_len - 1, nodes, nodes_len);
     if (res == -1) {
         free_graphs(&g, 1);
@@ -185,4 +186,25 @@ int attach_edges_info(edge *edges, unsigned int edges_len, node *nodes, unsigned
     }
 
     return 0;
+}
+
+void reverse_edges(edge **edges, unsigned int edges_len) {
+    edge *uno_card = NULL;
+    int i, curr;
+
+    if (!edges || !(*edges) || edges_len == 0)
+        return;
+
+    uno_card = malloc(sizeof(edge) * edges_len);
+    if (!uno_card)
+        return;
+
+    curr = 0;
+    for (i = (int) (edges_len - 1); i >= 0; --i) {
+        uno_card[curr] = (*edges)[i];
+        curr++;
+    }
+
+    free(*edges);
+    *edges = uno_card;
 }

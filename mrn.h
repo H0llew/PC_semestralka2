@@ -17,4 +17,6 @@ double degrees_to_radians(double x);
 
 int attach_edges_info(edge *edges, unsigned int edges_len, node *nodes, unsigned int nodes_len);
 
+void reverse_edges(edge **edges, unsigned int edges_len);
+
 #endif
