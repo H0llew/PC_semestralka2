@@ -1,5 +1,5 @@
 #include "mst.h"
-#include "../edges_io.h"
+#include "edges_io.h"
 
 int mst(node *nodes, unsigned int nodes_len, edge *edges, unsigned int edges_len, char *output_file) {
     int components = 0, res;

@@ -5,7 +5,7 @@
 #include "graph.h"
 #include "nodes_io.h"
 #include "edges_io.h"
-#include "algo/mst.h"
+#include "mst.h"
 
 #define INPUT_ERROR "Input error!\n"
 #define READ_ERROR "Error while reading files!n"

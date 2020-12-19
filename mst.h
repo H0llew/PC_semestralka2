@@ -1,9 +1,9 @@
 #ifndef MST_H
 #define MST_H
 
-#include "../graph.h"
-#include "../component_finder.h"
-#include "../kruskal_mst.h"
+#include "graph.h"
+#include "component_finder.h"
+#include "kruskal_mst.h"
 
 /**
  * Vykoná a vypíše hrany minimální kostru/kostry zadaného grafu pomocí jeho hran a vrcholů
