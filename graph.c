@@ -171,3 +171,19 @@ void free_edge(edge *edge) {
     free(edge->wkt);
     free(edge->nation_name);
 }
+
+void free_graphs(graph **graphs, unsigned int graphs_len) {
+    unsigned int i;
+
+    if (!graphs || !(*graphs))
+        return;
+
+    for (i = 0; i < graphs_len; ++i) {
+        if ((*graphs + i)->edges != NULL)
+            free((*graphs + i)->edges);
+        if ((*graphs + i)->mst != NULL)
+            free((*graphs + i)->mst);
+    }
+    free(*graphs);
+    *graphs = NULL;
+}

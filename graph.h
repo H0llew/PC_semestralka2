@@ -84,4 +84,6 @@ void free_edge(edge *edge);
 
 void free_edges(edge **edges, unsigned int edges_len);
 
+void free_graphs(graph **graphs, unsigned int graphs_len);
+
 #endif

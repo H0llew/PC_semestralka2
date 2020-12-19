@@ -47,7 +47,8 @@ int mst(node *nodes, unsigned int nodes_len, edge *edges, unsigned int edges_len
     }
 
     /* uvolni paměť */
-
+    free_graphs(&graphs, components);
+    free(union_edges);
     return 0;
 }
 
