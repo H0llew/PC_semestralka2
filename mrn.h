@@ -3,11 +3,11 @@
 
 #include <math.h>
 #include <stdlib.h>
-#include "../graph.h"
-#include "../kruskal_mst.h"
-#include "../edges_io.h"
+#include "graph.h"
+#include "kruskal_mst.h"
+#include "edges_io.h"
 
-int mrn(char *file_name, node *nodes, unsigned int nodes_len);
+int mrn(node *nodes, unsigned int nodes_len, char *file_name);
 
 graph *create_complete_graph(node *nodes, unsigned int nodes_len);
 

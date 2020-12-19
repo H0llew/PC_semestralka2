@@ -2,12 +2,13 @@
 
 #define PI 3.14159265358979323846
 
-int mrn(char *file_name, node *nodes, unsigned int nodes_len) {
+int mrn(node *nodes, unsigned int nodes_len, char *file_name) {
+    unsigned int i;
     graph *g = NULL;
     int res = 0;
 
     /* kontrola parametrů */
-    if (!nodes || nodes_len == 0 || !file_name)
+    if (!nodes || nodes_len <= 1 || !file_name)
         return -1;
 
     g = create_complete_graph(nodes, nodes_len);
@@ -15,17 +16,27 @@ int mrn(char *file_name, node *nodes, unsigned int nodes_len) {
         return -1;
 
     res = do_msts(g, 1, nodes, nodes_len);
-    if (res == -1)
+    if (res == -1) {
+        free_graphs(&g, 1);
         return -1;
+    }
 
     res = attach_edges_info(g->mst, nodes_len - 1, nodes, nodes_len);
-    if (res == -1)
+    if (res == -1) {
+        free_graphs(&g, 1);
         return -1;
+    }
 
     res = create_edges_file(file_name, g->mst, nodes_len - 1);
-    if (res == -1)
+    if (res == -1) {
+        free_graphs(&g, 1);
         return -1;
+    }
 
+    for (i = 0; i < nodes_len - 1; ++i) {
+        free((g->mst + i)->wkt);
+        free((g->mst + i)->nation_name);
+    }
     free(g->edges);
     free(g->mst);
     free(g);
@@ -37,6 +48,10 @@ graph *create_complete_graph(node *nodes, unsigned int nodes_len) {
     unsigned int i, j, edges_len, curr_edge;
     edge *curr = NULL;
     graph *g;
+
+    /* kontrola parametrů*/
+    if (!nodes || nodes_len == 0)
+        return NULL;
 
     g = malloc(sizeof(graph));
     if (!g)
@@ -55,17 +70,30 @@ graph *create_complete_graph(node *nodes, unsigned int nodes_len) {
     for (i = 0; i < nodes_len; ++i) {
         for (j = i + 1; j < nodes_len; ++j) {
 
+            /*
             curr = malloc(sizeof(edge));
             if (!curr) {
                 return NULL;
             }
-
+            */
+            /*
             curr->source = nodes[i].id;
             curr->target = nodes[j].id;
             curr->weight = get_distance(nodes[i].longitude, nodes[i].latitude, nodes[j].longitude, nodes[j].latitude);
 
             g->edges[curr_edge] = *curr;
             free(curr);
+            */
+
+            (g->edges + curr_edge)->source = nodes[i].id;
+            (g->edges + curr_edge)->target = nodes[j].id;
+            (g->edges + curr_edge)->weight = get_distance(nodes[i].longitude, nodes[i].latitude,
+                                                          nodes[j].longitude, nodes[j].latitude);
+            (g->edges + curr_edge)->id = 0;
+            (g->edges + curr_edge)->component = 0;
+            (g->edges + curr_edge)->nation_id = 0;
+            (g->edges + curr_edge)->nation_name = NULL;
+            (g->edges + curr_edge)->wkt = NULL;
 
             curr_edge++;
         }
@@ -88,7 +116,7 @@ double get_distance(double longitude_a, double latitude_a, double longitude_b, d
     res = acos((cos(latitude_b) * cos(latitude_a)) +
                (sin(latitude_b) * sin(latitude_a) * cos(longitude_b - longitude_a)));
 
-    res = res * 6371.11;
+    res = res * 6371110;
 
     return res;
 }
@@ -98,9 +126,10 @@ double degrees_to_radians(double x) {
 }
 
 int attach_edges_info(edge *edges, unsigned int edges_len, node *nodes, unsigned int nodes_len) {
-    unsigned int i;
+    unsigned int i, j;
     char *buffer = NULL;
     node *s, *t;
+    int pos_s, pos_t;
 
     /* kontrola parametrů */
     if (!edges || edges_len == 0 || !nodes || nodes_len == 0)
@@ -111,21 +140,45 @@ int attach_edges_info(edge *edges, unsigned int edges_len, node *nodes, unsigned
         if (!buffer)
             return -1;
 
-        s = &nodes[get_node_pos(edges[i].source, nodes, nodes_len)];
-        t = &nodes[get_node_pos(edges[i].target, nodes, nodes_len)];
+        pos_s = get_node_pos(edges[i].source, nodes, nodes_len);
+        pos_t = get_node_pos(edges[i].target, nodes, nodes_len);
+        if (pos_s == -1 || pos_t == -1) {
+            for (j = 0; j < i - 1; ++j) {
+                free((edges + j)->wkt);
+                free((edges + j)->nation_name);
+            }
+            free(buffer);
+            return -1;
+        }
+
+        s = &nodes[pos_s];
+        t = &nodes[pos_t];
 
         sprintf(buffer, "\"MULTILINESTRING ((%f %f,%f %f))\"", s->longitude, s->latitude, t->longitude, t->latitude);
         edges[i].id = i + 1;
-        edges[i].nation_id = 0;
+        edges[i].nation_id = 0; /* neznám */
 
         edges[i].nation_name = malloc(sizeof(char) + 1);
-        if (!edges[i].nation_name)
+        if (!edges[i].nation_name) {
+            for (j = 0; j < i - 1; ++j) {
+                free((edges + j)->wkt);
+                free((edges + j)->nation_name);
+            }
+            free(buffer);
             return -1;
-        strcpy(edges[i].nation_name, "");
+        }
+        strcpy(edges[i].nation_name, ""); /* neznám */
 
         edges[i].wkt = malloc(sizeof(char) * (strlen(buffer) + 1));
-        if (!edges[i].wkt)
+        if (!edges[i].wkt) {
+            free((edges + i)->nation_name);
+            for (j = 0; j < i - 1; ++j) {
+                free((edges + j)->wkt);
+                free((edges + j)->nation_name);
+            }
+            free(buffer);
             return -1;
+        }
         strcpy(edges[i].wkt, buffer);
 
         free(buffer);

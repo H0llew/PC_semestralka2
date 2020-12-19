@@ -6,12 +6,14 @@
 #include "nodes_io.h"
 #include "edges_io.h"
 #include "mst.h"
+#include "mrn.h"
 
 #define INPUT_ERROR "Input error!\n"
 #define READ_ERROR "Error while reading files!n"
 #define V_ERROR "Invalid vertex file.\n"
 #define E_ERROR "Invalid edge file.\n"
 #define MST_ERROR "Error while performing -mst!"
+#define MRN_ERROR "Error while performing -mrn!"
 
 void mainXXXXXX(int argc, char *argv[]) {
     /*
@@ -218,7 +220,14 @@ int main(int argc, char *argv[]) {
 
     /* proveď mrn */
     if (flags_val[3] != 0) {
-
+        res = mrn(nodes, nodes_len, argv[flags_val[3]]);
+        if (res == -1) {
+            free(flags_val);
+            free_nodes(&nodes, nodes_len);
+            free_edges(&edges, edges_len);
+            printf(MRN_ERROR);
+            return EXIT_FAILURE;
+        }
     }
 
     /* uvolni paměť */

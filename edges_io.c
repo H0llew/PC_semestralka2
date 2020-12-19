@@ -277,7 +277,7 @@ int create_edges_file(char *file_name, edge *edges, unsigned int edges_len) {
             return -1;
         }
 
-        sprintf(buffer, "%s,%d,%u,%s,%d,%d,%f,,,,,,,,,,,,,,,,,,\n",
+        sprintf(buffer, "%s,%d,%u,%s,%d,%d,%.3f,,,,,,,,,,,,,,,,,,\n",
                 edges[i].wkt, edges[i].id, edges[i].nation_id,
                 edges[i].nation_name, edges[i].source, edges[i].target, edges[i].weight);
 
