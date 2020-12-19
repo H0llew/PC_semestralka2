@@ -42,7 +42,6 @@ int mst(node *nodes, unsigned int nodes_len, edge *edges, unsigned int edges_len
     res = create_edges_file(output_file, union_edges, union_edges_len);
     if (res == -1) {
         /* uvolni paměť */
-
         return -1;
     }
 
@@ -56,7 +55,7 @@ int join_edges(graph *graphs, unsigned int components, edge **edges, unsigned in
     unsigned int count, i, j, k;
 
     /* kontrola vstupu */
-    if (!graphs || !graphs->mst || graphs->v == 0 || graphs->e == 0 || components == 0 || !edges)
+    if (!graphs || components == 0 || !edges)
         return -1;
 
     /* zjisti kolik hran je celkem ze všech mst */

@@ -59,8 +59,11 @@ int create_mst(graph *g, node *nodes, unsigned int nodes_len, subset subsets[]) 
     int a, b, res;
 
     /* kontrola parametrů */
-    if (!g || !g->edges || g->e == 0 || g->v <= 1 || !nodes || nodes_len == 0 || !subsets)
+    if (!g || !g->edges || !nodes || nodes_len == 0 || !subsets)
         return -1;
+
+    if (g->e == 0 || g->v <= 1)
+        return 0;
 
     /* 1. krok algoritmu -> seřaď prvky podle váhy(délky tratě) vzestupně */
     qsort(g->edges, g->e, sizeof(edge), compare_edges_weight);
