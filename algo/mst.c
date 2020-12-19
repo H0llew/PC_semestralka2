@@ -26,6 +26,7 @@ int mst(node *nodes, unsigned int nodes_len, edge *edges, unsigned int edges_len
     res = do_msts(graphs, components, nodes, nodes_len);
     if (res == -1) {
         /* uvolni pamět */
+        free_graphs(&graphs, components);
         return -1;
     }
 
@@ -33,6 +34,7 @@ int mst(node *nodes, unsigned int nodes_len, edge *edges, unsigned int edges_len
     res = join_edges(graphs, components, &union_edges, &union_edges_len);
     if (res == -1) {
         /* uvolni paměť */
+        free_graphs(&graphs, components);
         return -1;
     }
 
@@ -42,6 +44,8 @@ int mst(node *nodes, unsigned int nodes_len, edge *edges, unsigned int edges_len
     res = create_edges_file(output_file, union_edges, union_edges_len);
     if (res == -1) {
         /* uvolni paměť */
+        free_graphs(&graphs, components);
+        free(union_edges);
         return -1;
     }
 
