@@ -28,7 +28,7 @@ graph *create_graphs(node *nodes, unsigned int nodes_len,
     graph *gs = NULL;
     unsigned int *nodes_in_component_count = NULL;
     unsigned int *vertex_in_component_count = NULL;
-    unsigned int i, j, d;
+    int i, j, d;
     int comp;
 
     /* kontrola parametrů */
@@ -54,13 +54,13 @@ graph *create_graphs(node *nodes, unsigned int nodes_len,
     }
 
     /* vynuluj mi pole počtů vrcholů a hran */
-    for (i = 0; i < components; ++i) {
+    for (i = 0; i < (int) components; ++i) {
         nodes_in_component_count[i] = 0;
         vertex_in_component_count[i] = 0;
     }
 
     /* přiřaď mi ke každé komponentě počet jejich vrcholů */
-    for (i = 0; i < nodes_len; ++i) {
+    for (i = 0; i < (int) nodes_len; ++i) {
         comp = nodes[i].component;
         if (comp > (int) components || comp < 0) {
             /* špatné ignorujeme */
@@ -70,7 +70,7 @@ graph *create_graphs(node *nodes, unsigned int nodes_len,
     }
 
     /* přiřaď mi ke každé komponentě počet jejich hran */
-    for (i = 0; i < edges_len; ++i) {
+    for (i = 0; i < (int) edges_len; ++i) {
         comp = edges[i].component;
         if (comp > (int) components || comp < 0) {
             /* špatné ignorujeme */
@@ -79,7 +79,7 @@ graph *create_graphs(node *nodes, unsigned int nodes_len,
         vertex_in_component_count[comp]++;
     }
 
-    for (i = 0; i < components; ++i) {
+    for (i = 0; i < (int) components; ++i) {
         /*
         g = malloc(sizeof(graph));
         if (!g) {
@@ -111,13 +111,13 @@ graph *create_graphs(node *nodes, unsigned int nodes_len,
         }
         */
         d = 0;
-        for (j = 0; j < edges_len; j++) {
+        for (j = 0; j < (int) edges_len; j++) {
             if (edges[j].component == (int) i) {
                 gs[i].edges[d] = edges[j];
                 d++;
             }
 
-            if (d == gs[i].e)
+            if (d == (int) gs[i].e)
                 break;
         }
         /* free(g); */

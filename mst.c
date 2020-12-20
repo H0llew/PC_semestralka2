@@ -5,7 +5,7 @@ int mst(node *nodes, unsigned int nodes_len, edge *edges, unsigned int edges_len
     int components = 0, res;
     graph *graphs = NULL;
     /* join */
-    unsigned int union_edges_len = 0, i;
+    unsigned int union_edges_len = 0;
     edge *union_edges = NULL;
 
     /* kontrola vstupu */

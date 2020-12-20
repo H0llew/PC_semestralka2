@@ -4,7 +4,7 @@ int read_edges(char *file_name, edge **edges, unsigned int *edges_len) {
     FILE *file;
     unsigned int file_length;
     edge *rows = NULL, *curr = NULL;
-    int actEdge, i;
+    int actEdge;
     char row[MAX_EDGES_ROW_LENGTH];
 
     /* kontrola parametrů */

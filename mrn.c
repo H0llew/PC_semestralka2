@@ -47,8 +47,7 @@ int mrn(node *nodes, unsigned int nodes_len, char *file_name) {
 
 graph *create_complete_graph(node *nodes, unsigned int nodes_len) {
     unsigned int i, j, edges_len, curr_edge;
-    edge *curr = NULL;
-    graph *g;
+    graph *g = NULL;
 
     /* kontrola parametrů*/
     if (!nodes || nodes_len == 0)
