@@ -1,108 +1,85 @@
 #include "mrn.h"
 
 #define PI 3.14159265358979323846
+/* v metrech */
+#define EARTH_RADIUS 6371110
 
 int mrn(node *nodes, unsigned int nodes_len, char *file_name) {
     unsigned int i;
-    graph *g = NULL;
     int res = 0;
+
+    edge *all_edges = NULL; /* bude jich (n-1)/2 */
+    edge *mst = NULL;
+    unsigned int mst_len = 0; /* možná zbytečné, protože víme že jich bude n-1 (máme jen 1 komponentu)*/
 
     /* kontrola parametrů */
     if (!nodes || nodes_len <= 1 || !file_name)
         return -1;
 
-    g = create_complete_graph(nodes, nodes_len);
-    if (!g)
+    all_edges = create_complete_graph(nodes, nodes_len);
+    if (!all_edges)
         return -1;
 
-    res = do_msts(g, 1, nodes, nodes_len);
+    res = create_mst(nodes, nodes_len, all_edges, (nodes_len - 1) / 2, &mst, &mst_len);
     if (res == -1) {
-        free_graphs(&g, 1);
+        free(all_edges);
         return -1;
     }
 
-    reverse_edges(&g->mst, nodes_len - 1);
-    res = attach_edges_info(g->mst, nodes_len - 1, nodes, nodes_len);
+    reverse_edges(&mst, mst_len); /* protože sestupné pořadí je vyžadováno */
+    res = attach_edges_info(mst, mst_len, nodes, nodes_len);
     if (res == -1) {
-        free_graphs(&g, 1);
+        free(all_edges);
+        free(mst);
         return -1;
     }
 
-    res = create_edges_file(file_name, g->mst, nodes_len - 1);
+    res = create_edges_file(file_name, mst, mst_len);
     if (res == -1) {
-        free_graphs(&g, 1);
+        free_edges(&mst, mst_len); /* je potžeba uvolnovat i prvky hrany -> není shallow copy */
+        free(all_edges);
         return -1;
     }
 
-    for (i = 0; i < nodes_len - 1; ++i) {
-        free((g->mst + i)->wkt);
-        free((g->mst + i)->nation_name);
-    }
-    free(g->edges);
-    free(g->mst);
-    free(g);
+    free_edges(&mst, mst_len);
+    free(all_edges);
 
     return 0;
 }
 
-graph *create_complete_graph(node *nodes, unsigned int nodes_len) {
+edge *create_complete_graph(node *nodes, unsigned int nodes_len) {
     unsigned int i, j, edges_len, curr_edge;
-    graph *g = NULL;
+    edge *all_edges = NULL;
 
     /* kontrola parametrů*/
     if (!nodes || nodes_len == 0)
         return NULL;
 
-    g = malloc(sizeof(graph));
-    if (!g)
-        return NULL;
-
     /* vypočti kolik bude hran */
     edges_len = (nodes_len * (nodes_len - 1)) / 2;
-    g->edges = malloc(sizeof(edge) * edges_len);
-    if (!g->edges) {
-        free(g);
+    all_edges = malloc(sizeof(edge) * edges_len);
+    if (!all_edges)
         return NULL;
-    }
 
     /* udělej hrany mezi všemi vrcholy v*/
     curr_edge = 0;
     for (i = 0; i < nodes_len; ++i) {
         for (j = i + 1; j < nodes_len; ++j) {
-
-            /*
-            curr = malloc(sizeof(edge));
-            if (!curr) {
-                return NULL;
-            }
-            */
-            /*
-            curr->source = nodes[i].id;
-            curr->target = nodes[j].id;
-            curr->weight = get_distance(nodes[i].longitude, nodes[i].latitude, nodes[j].longitude, nodes[j].latitude);
-
-            g->edges[curr_edge] = *curr;
-            free(curr);
-            */
-
-            (g->edges + curr_edge)->source = nodes[i].id;
-            (g->edges + curr_edge)->target = nodes[j].id;
-            (g->edges + curr_edge)->weight = get_distance(nodes[i].longitude, nodes[i].latitude,
-                                                          nodes[j].longitude, nodes[j].latitude);
-            (g->edges + curr_edge)->id = 0;
-            (g->edges + curr_edge)->component = 0;
-            (g->edges + curr_edge)->nation_id = 0;
-            (g->edges + curr_edge)->nation_name = NULL;
-            (g->edges + curr_edge)->wkt = NULL;
+            (all_edges + curr_edge)->source = nodes[i].id;
+            (all_edges + curr_edge)->target = nodes[j].id;
+            (all_edges + curr_edge)->weight = get_distance(nodes[i].longitude, nodes[i].latitude,
+                                                           nodes[j].longitude, nodes[j].latitude);
+            (all_edges + curr_edge)->id = 0;
+            (all_edges + curr_edge)->component = 0;
+            (all_edges + curr_edge)->nation_id = 0;
+            (all_edges + curr_edge)->nation_name = NULL;
+            (all_edges + curr_edge)->wkt = NULL;
 
             curr_edge++;
         }
     }
 
-    g->e = edges_len;
-    g->v = nodes_len;
-
-    return g;
+    return all_edges;
 }
 
 double get_distance(double longitude_a, double latitude_a, double longitude_b, double latitude_b) {
@@ -116,7 +93,7 @@ double get_distance(double longitude_a, double latitude_a, double longitude_b, d
     res = acos((cos(latitude_b) * cos(latitude_a)) +
                (sin(latitude_b) * sin(latitude_a) * cos(longitude_b - longitude_a)));
 
-    res = res * 6371110;
+    res = res * EARTH_RADIUS;
 
     return res;
 }
@@ -188,22 +165,22 @@ int attach_edges_info(edge *edges, unsigned int edges_len, node *nodes, unsigned
 }
 
 void reverse_edges(edge **edges, unsigned int edges_len) {
-    edge *uno_card = NULL;
+    edge *reverse_uno_card = NULL;
     int i, curr;
 
     if (!edges || !(*edges) || edges_len == 0)
         return;
 
-    uno_card = malloc(sizeof(edge) * edges_len);
-    if (!uno_card)
+    reverse_uno_card = malloc(sizeof(edge) * edges_len);
+    if (!reverse_uno_card)
         return;
 
     curr = 0;
     for (i = (int) (edges_len - 1); i >= 0; --i) {
-        uno_card[curr] = (*edges)[i];
+        reverse_uno_card[curr] = (*edges)[i];
         curr++;
     }
 
     free(*edges);
-    *edges = uno_card;
+    *edges = reverse_uno_card;
 }

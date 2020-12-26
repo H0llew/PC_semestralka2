@@ -14,19 +14,19 @@
  * @param nodes_len délka pole vrcholů
  * @param file_name název souboru
  *
- * @return 0 pokud vše proběhlo v pořádku, jinak NULL
+ * @return 0 pokud vše proběhlo v pořádku, jinak -1
  */
 int mrn(node *nodes, unsigned int nodes_len, char *file_name);
 
 /**
- * Vytvoří úplný graf ze zadaných vrcholů
+ * Vytvoří hrany úplného grafu ze zadaných vrcholů
  *
  * @param nodes pole vrcholů
  * @param nodes_len délka pole vrcholů
  *
- * @return graf nebo NULL
+ * @return pole hran nebo NULL
  */
-graph *create_complete_graph(node *nodes, unsigned int nodes_len);
+edge *create_complete_graph(node *nodes, unsigned int nodes_len);
 
 /**
  * Vypočítá vzdálenost dvou bodů na Zemi

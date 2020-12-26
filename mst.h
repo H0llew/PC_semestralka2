@@ -2,7 +2,6 @@
 #define MST_H
 
 #include "graph.h"
-#include "component_finder.h"
 #include "kruskal_mst.h"
 
 /**
@@ -17,18 +16,6 @@
  * @return 0 pokud vše proběhlo v pořádku, jinak -1
  */
 int mst(node *nodes, unsigned int nodes_len, edge *edges, unsigned int edges_len, char *output_file);
-
-/**
- * Spojí hrany mst všech zadaných grafů do jednoho pole
- *
- * @param graphs pole grafů
- * @param components počet grafů
- * @param edges pole spojených hran
- * @param edges_len délka pole hran
- *
- * @return 0 pokud vše proběhlo v pořádku, jinak -1
- */
-int join_edges(graph *graphs, unsigned int components, edge **edges, unsigned int *edges_len);
 
 /**
  * Porovnávací metoda -> porovná hrany podle jejich id

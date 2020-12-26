@@ -6,7 +6,8 @@
 
 /**
  * \struct vrchol grafu
- * \brief Struktura reprezentující železniční stanice, jako hranu grafu, obsahující veškerá potřebná data pro vizualizaci.
+ * \brief Struktura reprezentuje železniční stanice, jako hranu grafu.
+ *        Struktura obsahuje veškerá potřebná data pro vizualizaci.
  */
 typedef struct node_t {
     unsigned int id;
@@ -21,7 +22,8 @@ typedef struct node_t {
 
 /**
  * \struct hrana grafu
- * \brief Struktura reprezentující železniční síťě, jako hranu grafu, obsahující veškerá potřebná data pro vizualizaci.
+ * \brief Struktura reprezentuje železniční síť, jako hranu grafu.
+ *        Struktura obsahuje veškerá potřebná data pro vizualizaci.
  */
 typedef struct edge_t {
     unsigned int id;
@@ -39,42 +41,15 @@ typedef struct edge_t {
 } edge;
 
 /**
- * \struct graf
- * \brief Struktura reprezentující graf pomocí jeho hran.
- * Forma odpovídá potřebě pro Kruskalův algoritmus hledání minimální kostry grafu.
- */
-typedef struct graph_t {
-    unsigned int v, e;
-
-    edge *edges;
-    edge *mst;
-} graph;
-
-/**
- * Vrátí pozici vrcholu v poli vrcholů
+ * Vrátí pozici vrcholu v zadaném poli vrcholů
  *
- * @param n vrchol
- * @param nodes pole vrchoů
+ * @param n identifikátor hledaného vrcholu
+ * @param nodes pole vrcholů
  * @param nodes_len délka pole vrcholů
  *
  * @return pozice vrcholu
  */
 int get_node_pos(unsigned int n, node *nodes, unsigned int nodes_len);
-
-/**
- * Vytvoří grafy z pole hran a vrcholů, pro zadaný počet komponent
- *
- * @param nodes pole vrcholů
- * @param nodes_len délka pole vrcholů
- * @param edges hrany
- * @param edges_len délka pole hran
- * @param components počet komponent
- *
- * @return pole grafů
- */
-graph *create_graphs(node *nodes, unsigned int nodes_len,
-                     edge *edges, unsigned int edges_len,
-                     unsigned int components);
 
 /**
  * Uvolní paměť vrcholu
@@ -99,19 +74,11 @@ void free_nodes(node **nodes, unsigned int nodes_len);
 void free_edge(edge *edge);
 
 /**
- * Uvolní paměť hranám
+ * Uvolní paměť pole hran
  *
  * @param edges pole hran
  * @param edges_len délka pole hran
  */
 void free_edges(edge **edges, unsigned int edges_len);
-
-/**
- * Uvolní paměť grafů
- *
- * @param graphs pole grafů
- * @param graphs_len délka pole grafů
- */
-void free_graphs(graph **graphs, unsigned int graphs_len);
 
 #endif

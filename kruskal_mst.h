@@ -46,23 +46,18 @@ int union_union(subset subsets[], int a, int b);
 int compare_edges_weight(const void *e1, const void *e2);
 
 /**
- * Funkce vytvoří minimální kostru zadaného grafu pomocí Kruskalova algoritmu
+ * Funkce vytvoří a vrátí hrany minimální kostru grafu, nebo komponent grafu, pokud je zadán graf s více komponentami.
  *
- * @param g graf ve kterém hledáme minimální kostru
- * @return 0 pokud algoritmus proběhl v pořádku, jinak -1
- */
-int create_mst(graph *g, node *nodes, unsigned int nodes_len, subset subsets[]);
-
-/**
- * Provede Kruskalův algoritmus nad všemi zadanými grafy. Výsledek je zapsán do struktry grafu.
- *
- * @param graphs pole grafů
- * @param components počet grafů
  * @param nodes pole vrcholů
  * @param nodes_len délka pole vrcholů
+ * @param edges pole hran
+ * @param edges_len délka pole hran
+ * @param mst vyhledané hrany minimální kostry/koster
+ * @param mst_len počet hran v minimální kostře/koster
  *
- * @return 0 pokud vše proběhlo v pořádku, jinak -1
+ * @return 0 pokud funkce proběhla v pořádku, jinak -1
  */
-int do_msts(graph *graphs, unsigned int components, node *nodes, unsigned int nodes_len);
+int create_mst(node *nodes, unsigned int nodes_len, edge *edges, unsigned int edges_len,
+               edge **mst, unsigned int *mst_len);
 
 #endif
